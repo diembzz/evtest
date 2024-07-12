@@ -19,6 +19,7 @@ class VenuesController extends Controller
     {
         return QueryBuilder::for(Venue::class)
             ->allowedSorts(['name'])
+            ->defaultSort(['-id'])
             ->paginate();
     }
 

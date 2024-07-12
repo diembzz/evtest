@@ -1,4 +1,12 @@
 <template>
+  <router-link :to="'/events/create'">
+    <el-button
+      type="primary"
+      class="ui-datalist-create-btn"
+    >Create
+    </el-button>
+  </router-link>
+
   <el-table
     :data="items"
     :border="!loading"

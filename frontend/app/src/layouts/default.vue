@@ -1,24 +1,23 @@
 <template>
   <el-container>
     <el-header>
-      <Menu/>
+      <UiMenu/>
     </el-header>
     <el-main>
-      <Breadcrumbs/>
+      <UiBreadcrumbs/>
       <div class="app-container">
         <slot/>
       </div>
-
     </el-main>
   </el-container>
 </template>
 
 <script lang="ts">
-import Breadcrumbs from "~/components/layout/breadcrumbs.vue";
-import Menu from "~/components/layout/menu.vue";
+import UiBreadcrumbs from "~/components/layout/UiBreadcrumbs.vue";
+import UiMenu from "~/components/layout/UiMenu.vue";
 
 export default defineNuxtComponent({
-  components: {Menu, Breadcrumbs},
+  components: {UiMenu, UiBreadcrumbs},
 })
 </script>
 

@@ -20,6 +20,7 @@ header.el-header {
 .el-main {
   width: 1000px;
   margin: auto;
+  position: relative;
 }
 
 .el-breadcrumb {
@@ -34,6 +35,12 @@ header.el-header {
   min-height: 75vh;
   flex-direction: row;
   flex-wrap: wrap;
+}
+
+.ui-datalist-create-btn {
+  position: absolute;
+  top: 21px;
+  right: 23px;
 }
 
 .app-form-footer > .el-form-item__content {
