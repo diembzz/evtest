@@ -7,6 +7,7 @@
     :on-preview="handlePreview"
     :on-remove="handleRemove"
     :auto-upload="false"
+    :accept="'image/jpeg,image/png'"
     :limit="1"
   >
     <el-icon>
@@ -17,12 +18,15 @@
   <el-dialog align-center v-model="preview">
     <img :src="modelValue" alt="Preview Image"/>
   </el-dialog>
+
+  <img ref="img" :src="modelValue" style="display: none" alt=""/>
 </template>
 
 <script lang="ts">
 import type {UploadFile, UploadUserFile} from 'element-plus';
-import {Plus} from '@element-plus/icons-vue';
 import {ElUpload} from 'element-plus';
+import {Plus} from '@element-plus/icons-vue';
+import type {PropType} from "vue";
 
 export default defineNuxtComponent({
   components: {Plus},
@@ -33,6 +37,20 @@ export default defineNuxtComponent({
   },
   props: {
     modelValue: String,
+    data: Object as PropType<{ width: number, height: number }>
+  },
+  watch: {
+    modelValue(value) {
+      this.$nextTick(() => {
+        this.$emit('update:data', value ? {
+          width: (this.$refs.img as HTMLImageElement).naturalWidth,
+          height: (this.$refs.img as HTMLImageElement).naturalHeight,
+        } : {
+          width: 0,
+          height: 0,
+        });
+      });
+    }
   },
   methods: {
     defaultList(): UploadUserFile[] {

@@ -5,7 +5,6 @@
     :rules="rules"
     status-icon
   >
-
     <div v-if="ready">
       <el-form-item prop="name" :error="errors['name']" label="Name">
         <el-input v-model="fields.name"/>
@@ -20,7 +19,7 @@
         </el-select>
       </el-form-item>
       <el-form-item prop="poster.src" :error="errors['poster.src']" label="Poster">
-        <ui-image-upload-field v-model="fields.poster.src"/>
+        <ui-image-upload-field v-model="fields.poster.src" v-model:data="image"/>
       </el-form-item>
       <el-divider/>
       <el-form-item class="app-form-footer">
@@ -47,10 +46,15 @@ export default defineNuxtComponent({
       fields: {poster: {src: ''}} as Partial<IEvent>,
       errors: {} as { [key: string]: string },
       venues: [] as { id: number, name: string }[],
+      image: {width: 0, height: 0},
       rules: {
         name: [{required: true, message: 'Please input name'}],
         venue_id: [{required: true, message: 'Please select an option'}],
-        poster_id: [{required: true, message: 'Please upload poster'}],
+        'poster.src': [
+          {required: true, message: 'Please upload poster'},
+          {validator: this.validateWidth, value: 400, message: 'The minimum width of image is 400 pixels'},
+          {validator: this.validateHeight, value: 400, message: 'The minimum height of image is 400 pixels'},
+        ],
         event_date: [{type: 'date', required: true, message: 'Please pick a date'}],
       } as FormRules,
     }
@@ -80,6 +84,9 @@ export default defineNuxtComponent({
   },
 
   methods: {
+
+    // form
+
     async submitForm() {
       await (this.$refs.form as FormInstance).validate(async (valid) => {
         if (valid) {
@@ -113,9 +120,28 @@ export default defineNuxtComponent({
         }
       })
     },
+
     resetForm() {
       (this.$refs.form as FormInstance).resetFields();
-    }
+    },
+
+    // validators
+
+    validateWidth(rule: {value: number, message: string}, value: string, callback: (error?: string) => void) {
+      if (this.image.width && this.image.width < rule.value) {
+        callback(rule.message);
+      }
+
+      callback();
+    },
+
+    validateHeight(rule: {value: number, message: string}, value: string, callback: (error?: string) => void) {
+      if (this.image.width && this.image.height < rule.value) {
+        callback(rule.message);
+      }
+
+      callback();
+    },
   }
 })
 </script>

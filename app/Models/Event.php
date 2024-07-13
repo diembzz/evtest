@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Base\Models\BaseEvent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Imagick;
 
 /**
  * @property-read string $src

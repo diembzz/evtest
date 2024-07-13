@@ -2,7 +2,7 @@ FROM node:20.13.1-alpine AS node
 FROM php:8.2-fpm-alpine
 
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin
-RUN install-php-extensions mysqli pdo_mysql zip intl opcache bcmath @composer
+RUN install-php-extensions mysqli pdo_mysql zip intl opcache bcmath imagick @composer
 
 COPY --from=node /usr/lib /usr/lib
 COPY --from=node /usr/local/lib /usr/local/lib

@@ -15,6 +15,8 @@ class EventsController extends Controller
 {
     public const POSTERS_PATH = 'images/events/posters';
     public const POSTERS_FULL_PATH = File::PUBLIC_PATH . '/' . self::POSTERS_PATH;
+    public const POSTER_IMAGE_MAX_WIDTH = 800;
+    public const POSTER_IMAGE_MAX_HEIGHT = 800;
 
     /**
      * @return LengthAwarePaginator
@@ -54,6 +56,7 @@ class EventsController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @throws \ImagickException
      */
     public function update(SaveEventRequest $request, Event $event): Event
     {
@@ -76,15 +79,19 @@ class EventsController extends Controller
 
     /**
      * @param Event $model
-     * @param string $b64
+     * @param string $base64
      * @return void
+     * @throws \ImagickException
+     *
+     * @todo handle with File model, after implementing nested models validation.
      */
-    private function handlePosterFile(Event $model, string $b64): void
+    private function handlePosterFile(Event $model, string $base64): void
     {
-        if (str_starts_with($b64, 'data:image/')) {
-            list($type, $b64) = explode(';', $b64);
+        if (str_starts_with($base64, 'data:image/')) {
+            list($head, $b64) = explode(';', $base64);
             list(, $b64) = explode(',', $b64);
-            $ext = substr($type, strlen('data:image/'));
+            $ext = substr($head, strlen('data:image/'));
+            $this->cropPosterImage($b64);
 
             do {
                 $name = md5(uniqid(rand(), true));
@@ -110,5 +117,25 @@ class EventsController extends Controller
                 $model->poster_id = $file->id;
             }
         }
+    }
+
+    /**
+     * @param string $b64
+     * @return void
+     * @throws \ImagickException
+     *
+     * @todo handle with File (based) model, after implementing nested models validation.
+     */
+    private function cropPosterImage(string &$b64): void
+    {
+        $imagick = new \Imagick();
+        $imagick->readImageBlob(base64_decode($b64));
+        $imagick->scaleImage(
+            self::POSTER_IMAGE_MAX_WIDTH,
+            self::POSTER_IMAGE_MAX_HEIGHT,
+            true,
+        );
+
+        $b64 = base64_encode($imagick->getImageBlob());
     }
 }
