@@ -23,7 +23,7 @@ class ImageSizeMin implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!$value) {
+        if (!str_starts_with($value, 'data:image/')) {
             return;
         }
 

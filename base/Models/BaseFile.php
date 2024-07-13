@@ -4,7 +4,7 @@ namespace Base\Models;
 
 use Base\Custom\Illuminate\Database\Eloquent\Model;
 use Base\Models\BaseEvent as Event;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $id
@@ -12,20 +12,21 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $path
  * @property string $created_at
  * @property string $updated_at
- * @property Event[] $events
+ * @property string $deleted_at
+ * @property Event $event
  */
 abstract class BaseFile extends Model
 {
     /**
      * @var array
      */
-    protected $fillable = ['base', 'path', 'created_at', 'updated_at'];
+    protected $fillable = ['base', 'path', 'created_at', 'updated_at', 'deleted_at'];
 
     /**
-     * @return HasMany
+     * @return HasOne
      */
-    public function events(): HasMany
+    public function event(): HasOne
     {
-        return $this->hasMany(Event::class, 'poster_id');
+        return $this->hasOne(Event::class, 'poster_id');
     }
 }

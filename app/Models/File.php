@@ -4,12 +4,15 @@ namespace App\Models;
 
 use Base\Models\BaseFile;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property Event[] $events
  */
 class File extends BaseFile
 {
+    use SoftDeletes;
+
     public const PUBLIC_PATH = 'storage/app/public';
 
     /**
@@ -18,19 +21,6 @@ class File extends BaseFile
     protected $appends = [
         'src'
     ];
-
-    /**
-     * @inheritdoc
-     */
-    protected static function boot(): void
-    {
-        parent::boot();
-
-        static::deleting(function ($model) {
-            $file = base_path(self::PUBLIC_PATH . '/' . $model->base . '/' . $model->path);
-            file_exists($file) && unlink($file);
-        });
-    }
 
     /**
      * @return Attribute
